@@ -1,7 +1,7 @@
 #pragma once
 
 #include <execution>
-#include <cmath>
+#include <iterator>
 
 namespace map {
 
@@ -12,7 +12,7 @@ namespace map {
         }
     }
 
-    template<typename InIter, typename OutIter, typename Func>
+    template<std::random_access_iterator InIter, std::random_access_iterator OutIter, typename Func>
     auto map_openmp_alg(InIter in_first, InIter in_last, OutIter out_first, Func func) -> void {
         const auto n = std::distance(in_first, in_last);
 #pragma omp parallel for schedule(guided)

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(T level_up)
+set(T cpp_alg_bench)
 
 project(${T})
 
