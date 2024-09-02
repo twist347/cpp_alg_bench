@@ -1,0 +1,27 @@
+cmake_minimum_required(VERSION 3.20)
+
+set(T level_up)
+
+project(${T})
+
+find_package(TBB REQUIRED)
+find_package(OpenMP REQUIRED)
+find_package(benchmark REQUIRED)
+find_package(GTest REQUIRED)
+
+set(CMAKE_CXX_STANDARD 20)
+
+set(test_bench_path ${CMAKE_SOURCE_DIR}/test_bench)
+set(test_accuracy_path ${CMAKE_SOURCE_DIR}/test_accuracy)
+
+add_executable(${T} main.cpp)
+
+add_subdirectory(${test_bench_path}/reduce)
+add_subdirectory(${test_bench_path}/sort)
+add_subdirectory(${test_bench_path}/sort_quiz)
+add_subdirectory(${test_bench_path}/map)
+add_subdirectory(${test_bench_path}/copy)
+
+add_subdirectory(${test_accuracy_path}/copy)
+add_subdirectory(${test_accuracy_path}/reduce)
+add_subdirectory(${test_accuracy_path}/map)
