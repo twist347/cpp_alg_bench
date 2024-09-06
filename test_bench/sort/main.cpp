@@ -1,5 +1,5 @@
-#include <execution>
 #include <benchmark/benchmark.h>
+#include <execution>
 
 #include "utils.h"
 
@@ -24,10 +24,10 @@ static auto gb_qsort_alg_bench(benchmark::State &state) -> void {
 
     for ([[maybe_unused]] auto _ : state) {
         state.PauseTiming();
-        utils::fill_data(std::begin(data), std::end(data), min_val, max_val);
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
         state.ResumeTiming();
 
-        std::qsort(std::data(data), data.size(), sizeof(value_type), qsort_cmp_asc);
+        std::qsort(std::data(data), std::size(data), sizeof(value_type), qsort_cmp_asc);
 
         benchmark::ClobberMemory();
     }
@@ -39,7 +39,7 @@ static auto gb_sort_alg_bench(benchmark::State &state) -> void {
 
     for ([[maybe_unused]] auto _ : state) {
         state.PauseTiming();
-        utils::fill_data(std::begin(data), std::end(data), min_val, max_val);
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
         state.ResumeTiming();
 
         std::sort(std::begin(data), std::end(data));
@@ -54,7 +54,7 @@ static auto gb_sort_par_alg_bench(benchmark::State &state) -> void {
 
     for ([[maybe_unused]] auto _ : state) {
         state.PauseTiming();
-        utils::fill_data(std::begin(data), std::end(data), min_val, max_val);
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
         state.ResumeTiming();
 
         std::sort(std::execution::par, std::begin(data), std::end(data));
@@ -69,7 +69,7 @@ static auto gb_sort_unseq_alg_bench(benchmark::State &state) -> void {
 
     for ([[maybe_unused]] auto _ : state) {
         state.PauseTiming();
-        utils::fill_data(std::begin(data), std::end(data), min_val, max_val);
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
         state.ResumeTiming();
 
         std::sort(std::execution::unseq, std::begin(data), std::end(data));
@@ -84,7 +84,7 @@ static auto gb_sort_par_unseq_alg_bench(benchmark::State &state) -> void {
 
     for ([[maybe_unused]] auto _ : state) {
         state.PauseTiming();
-        utils::fill_data(std::begin(data), std::end(data), min_val, max_val);
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
         state.ResumeTiming();
 
         std::sort(std::execution::par_unseq, std::begin(data), std::end(data));

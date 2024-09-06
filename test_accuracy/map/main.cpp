@@ -8,22 +8,30 @@
 TEST(MapLoopAlg, NumericTest) {
     constexpr std::size_t size = 100'000;
     std::vector<int> from(size), to1(size), to2(size);
-    utils::fill_data(std::begin(from), std::end(from), -10, 10);
+    utils::fill_rnd_range(std::begin(from), std::end(from), -10, 10);
 
-    map::map_loop_alg(std::cbegin(from), std::cend(from), std::begin(to1), [](auto val) { return val * val; });
-    std::transform(std::cbegin(from), std::cend(from), std::begin(to2), [](auto val) { return val * val; });
+    constexpr auto closure = [](auto val) { return val * val; };
 
+    const auto res_it1 = map::loop_alg(std::cbegin(from), std::cend(from), std::begin(to1), closure);
+    const auto res_it2 = std::transform(std::cbegin(from), std::cend(from), std::begin(to2), closure);
+
+    ASSERT_EQ(res_it1, std::cend(to1));
+    ASSERT_EQ(res_it2, std::cend(to2));
     ASSERT_TRUE(std::equal(std::cbegin(to1), std::cend(to1), std::cbegin(to2)));
 }
 
 TEST(MapOpenMPAlg, NumericTest) {
     constexpr std::size_t size = 100'000;
     std::vector<int> from(size), to1(size), to2(size);
-    utils::fill_data(std::begin(from), std::end(from), -10, 10);
+    utils::fill_rnd_range(std::begin(from), std::end(from), -10, 10);
 
-    map::map_openmp_alg(std::cbegin(from), std::cend(from), std::begin(to1), [](auto val) { return val * val; });
-    std::transform(std::cbegin(from), std::cend(from), std::begin(to2), [](auto val) { return val * val; });
+    constexpr auto closure = [](auto val) { return val * val; };
 
+    const auto res_it1 = map::openmp_alg(std::cbegin(from), std::cend(from), std::begin(to1), closure);
+    const auto res_it2 = std::transform(std::cbegin(from), std::cend(from), std::begin(to2), closure);
+
+    ASSERT_EQ(res_it1, std::cend(to1));
+    ASSERT_EQ(res_it2, std::cend(to2));
     ASSERT_TRUE(std::equal(std::cbegin(to1), std::cend(to1), std::cbegin(to2)));
 }
 

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(T copy_accuracy)
+set(T zip_accuracy)
 
 project(${T})
 

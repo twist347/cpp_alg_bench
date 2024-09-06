@@ -31,7 +31,7 @@ struct Comparator {
 
 };
 
-auto cmp_closure = []<typename Value>(Value lhs, Value rhs) { return lhs < rhs; };
+constexpr auto cmp_closure = []<typename Value>(Value lhs, Value rhs) { return lhs < rhs; };
 
 static auto gb_std_sort_func_cmp_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
@@ -39,7 +39,7 @@ static auto gb_std_sort_func_cmp_bench(benchmark::State &state) -> void {
 
     for ([[maybe_unused]] auto _ : state) {
         state.PauseTiming();
-        utils::fill_data(std::begin(data), std::end(data), min_val, max_val);
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
         state.ResumeTiming();
 
         std::sort(std::begin(data), std::end(data), cmp_func<value_type>);
@@ -54,7 +54,7 @@ static auto gb_std_sort_struct_cmp_bench(benchmark::State &state) -> void {
 
     for ([[maybe_unused]] auto _ : state) {
         state.PauseTiming();
-        utils::fill_data(std::begin(data), std::end(data), min_val, max_val);
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
         state.ResumeTiming();
 
         std::sort(std::begin(data), std::end(data), Comparator<value_type>{});
@@ -69,7 +69,7 @@ static auto gb_std_sort_closure_cmp_bench(benchmark::State &state) -> void {
 
     for ([[maybe_unused]] auto _ : state) {
         state.PauseTiming();
-        utils::fill_data(std::begin(data), std::end(data), min_val, max_val);
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
         state.ResumeTiming();
 
         std::sort(std::begin(data), std::end(data), cmp_closure);

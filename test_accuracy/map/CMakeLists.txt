@@ -4,6 +4,8 @@ set(T map_accuracy)
 
 project(${T})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,leak,undefined")
+
 add_executable(${T} main.cpp)
 
 target_link_libraries(${T} gtest TBB::tbb OpenMP::OpenMP_CXX)

@@ -1,4 +1,5 @@
 #include <benchmark/benchmark.h>
+#include <execution>
 
 #include "utils.h"
 #include "map.h"
@@ -19,94 +20,16 @@ static auto gb_map_loop_alg_bench(benchmark::State &state) -> void {
 
     for ([[maybe_unused]] auto _ : state) {
         state.PauseTiming();
-        utils::fill_data(std::begin(from), std::end(from), min_val, max_val);
+        utils::fill_rnd_range(std::begin(from), std::end(from), min_val, max_val);
         state.ResumeTiming();
 
-        map::map_loop_alg(
+        auto res_it = map::loop_alg(
             std::cbegin(from), std::cend(from),
             std::begin(to),
-            utils::hard_func<value_type>
+            utils::funcs::newton_sqrt<value_type>
         );
 
-        benchmark::ClobberMemory();
-    }
-}
-
-static auto gb_map_transform_alg_bench(benchmark::State &state) -> void {
-    const auto size = state.range(0);
-    container_type to(size), from(size);
-
-    for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_data(std::begin(from), std::end(from), min_val, max_val);
-        state.ResumeTiming();
-
-        std::transform(
-            std::cbegin(from), std::cend(from),
-            std::begin(to),
-            utils::hard_func<value_type>
-        );
-
-        benchmark::ClobberMemory();
-    }
-}
-
-static auto gb_map_transform_par_alg_bench(benchmark::State &state) -> void {
-    const auto size = state.range(0);
-    container_type to(size), from(size);
-
-    for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_data(std::begin(from), std::end(from), min_val, max_val);
-        state.ResumeTiming();
-
-        std::transform(
-            std::execution::par,
-            std::cbegin(from), std::cend(from),
-            std::begin(to),
-            utils::hard_func<value_type>
-        );
-
-        benchmark::ClobberMemory();
-    }
-}
-
-static auto gb_map_transform_unseq_alg_bench(benchmark::State &state) -> void {
-    const auto size = state.range(0);
-    container_type to(size), from(size);
-
-    for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_data(std::begin(from), std::end(from), min_val, max_val);
-        state.ResumeTiming();
-
-        std::transform(
-            std::execution::unseq,
-            std::cbegin(from), std::cend(from),
-            std::begin(to),
-            utils::hard_func<value_type>
-        );
-
-        benchmark::ClobberMemory();
-    }
-}
-
-static auto gb_map_transform_par_unseq_alg_bench(benchmark::State &state) -> void {
-    const auto size = state.range(0);
-    container_type to(size), from(size);
-
-    for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_data(std::begin(from), std::end(from), min_val, max_val);
-        state.ResumeTiming();
-
-        std::transform(
-            std::execution::par_unseq,
-            std::cbegin(from), std::cend(from),
-            std::begin(to),
-            utils::hard_func<value_type>
-        );
-
+        benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();
     }
 }
@@ -117,26 +40,110 @@ static auto gb_map_openmp_alg_bench(benchmark::State &state) -> void {
 
     for ([[maybe_unused]] auto _ : state) {
         state.PauseTiming();
-        utils::fill_data(std::begin(from), std::end(from), min_val, max_val);
+        utils::fill_rnd_range(std::begin(from), std::end(from), min_val, max_val);
         state.ResumeTiming();
 
-        map::map_openmp_alg(
+        auto res_it = map::openmp_alg(
             std::cbegin(from), std::cend(from),
             std::begin(to),
-            utils::hard_func<value_type>
+            utils::funcs::newton_sqrt<value_type>
         );
 
+        benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();
     }
 }
 
-constexpr std::size_t iter_num = 100;
+static auto gb_map_transform_alg_bench(benchmark::State &state) -> void {
+    const auto size = state.range(0);
+    container_type to(size), from(size);
+
+    for ([[maybe_unused]] auto _ : state) {
+        state.PauseTiming();
+        utils::fill_rnd_range(std::begin(from), std::end(from), min_val, max_val);
+        state.ResumeTiming();
+
+        auto res_it = std::transform(
+            std::cbegin(from), std::cend(from),
+            std::begin(to),
+            utils::funcs::newton_sqrt<value_type>
+        );
+
+        benchmark::DoNotOptimize(res_it);
+        benchmark::ClobberMemory();
+    }
+}
+
+static auto gb_map_transform_par_alg_bench(benchmark::State &state) -> void {
+    const auto size = state.range(0);
+    container_type to(size), from(size);
+
+    for ([[maybe_unused]] auto _ : state) {
+        state.PauseTiming();
+        utils::fill_rnd_range(std::begin(from), std::end(from), min_val, max_val);
+        state.ResumeTiming();
+
+        auto res_it = std::transform(
+            std::execution::par,
+            std::cbegin(from), std::cend(from),
+            std::begin(to),
+            utils::funcs::newton_sqrt<value_type>
+        );
+
+        benchmark::DoNotOptimize(res_it);
+        benchmark::ClobberMemory();
+    }
+}
+
+static auto gb_map_transform_unseq_alg_bench(benchmark::State &state) -> void {
+    const auto size = state.range(0);
+    container_type to(size), from(size);
+
+    for ([[maybe_unused]] auto _ : state) {
+        state.PauseTiming();
+        utils::fill_rnd_range(std::begin(from), std::end(from), min_val, max_val);
+        state.ResumeTiming();
+
+        auto res_it = std::transform(
+            std::execution::unseq,
+            std::cbegin(from), std::cend(from),
+            std::begin(to),
+            utils::funcs::newton_sqrt<value_type>
+        );
+
+        benchmark::DoNotOptimize(res_it);
+        benchmark::ClobberMemory();
+    }
+}
+
+static auto gb_map_transform_par_unseq_alg_bench(benchmark::State &state) -> void {
+    const auto size = state.range(0);
+    container_type to(size), from(size);
+
+    for ([[maybe_unused]] auto _ : state) {
+        state.PauseTiming();
+        utils::fill_rnd_range(std::begin(from), std::end(from), min_val, max_val);
+        state.ResumeTiming();
+
+        auto res_it = std::transform(
+            std::execution::par_unseq,
+            std::cbegin(from), std::cend(from),
+            std::begin(to),
+            utils::funcs::newton_sqrt<value_type>
+        );
+
+        benchmark::DoNotOptimize(res_it);
+        benchmark::ClobberMemory();
+    }
+}
+
+constexpr std::size_t iter_num = 50;
 
 BENCHMARK(gb_map_loop_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
+BENCHMARK(gb_map_openmp_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
 BENCHMARK(gb_map_transform_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
 BENCHMARK(gb_map_transform_par_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
 BENCHMARK(gb_map_transform_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
 BENCHMARK(gb_map_transform_par_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
-BENCHMARK(gb_map_openmp_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
 
 BENCHMARK_MAIN();

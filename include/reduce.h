@@ -7,122 +7,124 @@
 
 namespace reduce {
 
-    template<typename Iter>
-    auto acc_loop_alg(Iter first, Iter last) -> typename std::iterator_traits<Iter>::value_type {
-        using value_type = typename std::iterator_traits<Iter>::value_type;
-        value_type sum = 0;
-        for (Iter it = first; it != last; ++it) {
-            sum += *it;
+    template<std::input_iterator InputIt, typename Value, typename BinaryOp>
+    constexpr auto acc_loop_alg(InputIt first, InputIt last, Value init, BinaryOp op) -> Value {
+        for (; first != last; ++first) {
+            init = op(std::move(init), *first);
         }
-        return sum;
+        return init;
     }
 
-    template<typename Iter>
-    auto acc_for_each_alg(Iter first, Iter last) -> typename std::iterator_traits<Iter>::value_type {
-        using value_type = typename std::iterator_traits<Iter>::value_type;
-        value_type sum = 0;
-        std::for_each(first, last, [&sum](value_type v) { sum += v; });
-        return sum;
+    template<std::input_iterator InputIt, typename Value>
+    constexpr auto acc_loop_alg(InputIt first, InputIt last, Value init) -> Value {
+        return acc_loop_alg(first, last, init, std::plus());
     }
 
-    template<std::random_access_iterator Iter>
-    auto acc_openmp_alg(Iter first, Iter last) -> typename std::iterator_traits<Iter>::value_type {
-        using value_type = typename std::iterator_traits<Iter>::value_type;
-        value_type sum = 0;
-#pragma omp parallel for reduction(+:sum)
-        for (Iter it = first; it != last; ++it) {
-            sum += *it;
+    template<std::input_iterator InputIt, typename Value>
+    auto acc_openmp_alg(InputIt first, InputIt last, Value init) -> Value {
+        // necessary "it" because of OpenMP syntax of loops
+#pragma omp parallel for reduction(+:init)
+        for (auto it = first; it != last; ++it) {
+            init += *it;
         }
-        return sum;
+        return init;
     }
 
-    namespace detail {
-
-        inline constexpr int MIN_LEN = 100;
-
+    template<std::input_iterator InputIt>
+    auto acc_openmp_alg(
+        InputIt first, InputIt last
+    ) -> typename std::iterator_traits<InputIt>::value_type {
+        return acc_openmp_alg(first, last, typename std::iterator_traits<InputIt>::value_type{});
     }
 
-    template<typename Iter>
-    auto naive_reduce_thread(Iter first, Iter last, typename std::iterator_traits<Iter>::value_type init = 0) {
-        using value_type = typename std::iterator_traits<Iter>::value_type;
+    template<std::forward_iterator ForwardIt, typename Value>
+    auto naive_reduce_thread(ForwardIt first, ForwardIt last, Value init) -> Value {
+        static constexpr std::size_t MIN_LEN = 100;
         const auto length = std::distance(first, last);
 
         if (length == 0) {
             return init;
         }
-        if (length <= detail::MIN_LEN) {
-            return std::accumulate(first, first + length, init);
-        }
-
-        static auto num_threads = std::thread::hardware_concurrency();
-        const auto block_size = length / num_threads;
-
-        std::vector<std::thread> threads(num_threads);
-        std::vector<value_type> results(num_threads + 1);
-
-        auto accum_block = [](Iter first_, Iter last_, value_type &res) {
-            res = std::accumulate(first_, last_, res);
-        };
-
-        std::size_t thread_idx = 0;
-
-        for (;length >= block_size * (thread_idx + 1); first += block_size, ++thread_idx) {
-            threads[thread_idx] =
-                std::thread(accum_block, first, first + block_size, std::ref(results[thread_idx]));
-        }
-
-        const auto remainder = length - block_size * thread_idx;
-
-        if (remainder > 0) {
-            accum_block(first, first + remainder, std::ref(results[thread_idx]));
-        }
-
-        for (auto &&t : threads) {
-            t.join();
-        }
-
-        return std::accumulate(results.begin(), results.end(), init);
-    }
-
-    template<typename Iter>
-    auto naive_reduce_async(Iter first, Iter last, typename std::iterator_traits<Iter>::value_type init = 0) {
-        using value_type = typename std::iterator_traits<Iter>::value_type;
-        const auto length = std::distance(first, last);
-
-        if (length == 0) {
-            return init;
-        }
-        if (length <= detail::MIN_LEN) {
-            return std::accumulate(first, first + length, init);
+        if (length <= MIN_LEN) {
+            return std::accumulate(first, last, init);
         }
 
         static const auto num_threads = std::thread::hardware_concurrency();
         const auto block_size = length / num_threads;
 
-        std::vector<std::future<value_type>> results(num_threads);
+        std::vector<Value> results(num_threads);
+        std::vector<std::thread> threads;
+        threads.reserve(num_threads);
 
-        auto accumulate_block = [](Iter first_, Iter last_) {
-            return std::accumulate(first_, last_, value_type{});
+        constexpr auto accumulate_block = [](ForwardIt first_, ForwardIt last_, Value &res) {
+            res = std::accumulate(first_, last_, res);
         };
 
-        std::size_t thread_idx = 0;
-
-        for (;length >= block_size * (thread_idx + 1); first += block_size, ++thread_idx) {
-            results[thread_idx] = std::async(accumulate_block, first, first + block_size);
+        auto it = first;
+        for (std::size_t i = 0; i < num_threads - 1; ++i, std::advance(it, block_size)) {
+            threads.emplace_back(accumulate_block, it, std::next(it, block_size), std::ref(results[i]));
         }
 
-        const auto remainder = length - block_size * thread_idx;
-        auto result = init;
+        threads.emplace_back(accumulate_block, it, last, std::ref(results[num_threads - 1]));
 
-        if (remainder > 0) {
-            result += accumulate_block(first, first + remainder);
+        for (auto &t: threads) {
+            t.join();
         }
 
-        for (std::size_t i = 0; i < num_threads; ++i) {
-            result += results[i].get();
+        return std::accumulate(results.cbegin(), results.cend(), init);
+    }
+
+    template<std::forward_iterator ForwardIt>
+    auto naive_reduce_thread(
+        ForwardIt first, ForwardIt last
+    ) -> typename std::iterator_traits<ForwardIt>::value_type {
+        return naive_reduce_thread(first, last, typename std::iterator_traits<ForwardIt>::value_type{});
+    }
+
+    template<std::forward_iterator ForwardIt, typename Value>
+    auto naive_reduce_async(ForwardIt first, ForwardIt last, Value init) -> Value {
+        static constexpr std::size_t MIN_LEN = 100;
+        const auto length = std::distance(first, last);
+
+        if (length == 0) {
+            return init;
+        }
+        if (length <= MIN_LEN) {
+            return std::accumulate(first, last, init);
         }
 
-        return result + init;
+        static const auto num_threads = std::thread::hardware_concurrency();
+        const auto block_size = length / num_threads;
+
+        std::vector<std::future<Value>> results;
+        results.reserve(num_threads);
+
+        auto block_start = first;
+        for (std::size_t i = 0; i < num_threads - 1; ++i) {
+            auto block_end = block_start;
+            block_end += block_size;
+
+            results.emplace_back(std::async(std::launch::async, [block_start, block_end, init] {
+                return std::accumulate(block_start, block_end, init);
+            }));
+
+            block_start = block_end;
+        }
+
+        auto result = std::accumulate(block_start, last, init);
+
+        for (auto &future: results) {
+            result += future.get();
+        }
+
+        return result;
+    }
+
+    template<std::forward_iterator ForwardIt>
+    auto naive_reduce_async(
+        ForwardIt first, ForwardIt last
+    ) -> typename std::iterator_traits<ForwardIt>::value_type {
+        return naive_reduce_async(first, last, typename std::iterator_traits<ForwardIt>::value_type{});
     }
 
 }
