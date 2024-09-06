@@ -17,14 +17,11 @@ constexpr auto time_unit = benchmark::kMicrosecond;
 
 static auto gb_naive_par_sum_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
-    container_type to(size), from(size);
+    container_type src(size), dst(size);
+    utils::fill_rnd_range(std::begin(src), std::end(src), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(from), std::end(from), min_val, max_val);
-        state.ResumeTiming();
-
-        auto res_it = par_sum::naive_partial_sum(std::cbegin(from), std::cbegin(from), std::begin(to));
+        auto res_it = par_sum::naive_partial_sum(std::cbegin(src), std::cbegin(src), std::begin(dst));
 
         benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();
@@ -33,14 +30,11 @@ static auto gb_naive_par_sum_alg_bench(benchmark::State &state) -> void {
 
 static auto gb_std_par_sum_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
-    container_type to(size), from(size);
+    container_type src(size), dst(size);
+    utils::fill_rnd_range(std::begin(src), std::end(src), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(from), std::end(from), min_val, max_val);
-        state.ResumeTiming();
-
-        auto res_it = par_sum::naive_partial_sum(std::cbegin(from), std::cbegin(from), std::begin(to));
+        auto res_it = par_sum::naive_partial_sum(std::cbegin(src), std::cbegin(src), std::begin(dst));
 
         benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();
@@ -49,14 +43,11 @@ static auto gb_std_par_sum_alg_bench(benchmark::State &state) -> void {
 
 static auto gb_std_inc_scan_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
-    container_type to(size), from(size);
+    container_type src(size), dst(size);
+    utils::fill_rnd_range(std::begin(src), std::end(src), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(from), std::end(from), min_val, max_val);
-        state.ResumeTiming();
-
-        auto res_it = std::inclusive_scan(std::cbegin(from), std::cbegin(from), std::begin(to));
+        auto res_it = std::inclusive_scan(std::cbegin(src), std::cbegin(src), std::begin(dst));
 
         benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();
@@ -65,14 +56,11 @@ static auto gb_std_inc_scan_alg_bench(benchmark::State &state) -> void {
 
 static auto gb_std_inc_scan_par_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
-    container_type to(size), from(size);
+    container_type src(size), dst(size);
+    utils::fill_rnd_range(std::begin(src), std::end(src), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(from), std::end(from), min_val, max_val);
-        state.ResumeTiming();
-
-        auto res_it = std::inclusive_scan(std::execution::par, std::cbegin(from), std::cbegin(from), std::begin(to));
+        auto res_it = std::inclusive_scan(std::execution::par, std::cbegin(src), std::cbegin(src), std::begin(dst));
 
         benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();
@@ -81,14 +69,11 @@ static auto gb_std_inc_scan_par_alg_bench(benchmark::State &state) -> void {
 
 static auto gb_std_inc_scan_unseq_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
-    container_type to(size), from(size);
+    container_type src(size), dst(size);
+    utils::fill_rnd_range(std::begin(src), std::end(src), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(from), std::end(from), min_val, max_val);
-        state.ResumeTiming();
-
-        auto res_it = std::inclusive_scan(std::execution::unseq, std::cbegin(from), std::cbegin(from), std::begin(to));
+        auto res_it = std::inclusive_scan(std::execution::unseq, std::cbegin(src), std::cbegin(src), std::begin(dst));
 
         benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();
@@ -97,14 +82,12 @@ static auto gb_std_inc_scan_unseq_alg_bench(benchmark::State &state) -> void {
 
 static auto gb_std_inc_scan_par_unseq_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
-    container_type to(size), from(size);
+    container_type src(size), dst(size);
+    utils::fill_rnd_range(std::begin(src), std::end(src), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(from), std::end(from), min_val, max_val);
-        state.ResumeTiming();
-
-        auto res_it = std::inclusive_scan(std::execution::par_unseq, std::cbegin(from), std::cbegin(from), std::begin(to));
+        auto res_it =
+            std::inclusive_scan(std::execution::par_unseq, std::cbegin(src), std::cbegin(src), std::begin(dst));
 
         benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();

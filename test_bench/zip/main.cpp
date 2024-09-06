@@ -16,18 +16,15 @@ constexpr auto time_unit = benchmark::kMillisecond;
 
 static auto gb_zip_loop_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
-    container_type to(size), from1(size), from2(size);
+    container_type src1(size), src2(size), dst(size);
+    utils::fill_rnd_range(std::begin(src1), std::end(src1), min_val, max_val);
+    utils::fill_rnd_range(std::begin(src2), std::end(src2), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(from1), std::end(from1), min_val, max_val);
-        utils::fill_rnd_range(std::begin(from2), std::end(from2), min_val, max_val);
-        state.ResumeTiming();
-
         auto res_it = zip::loop_alg(
-            std::cbegin(from1), std::cend(from1),
-            std::cbegin(from2),
-            std::begin(to),
+            std::cbegin(src1), std::cend(src1),
+            std::cbegin(src2),
+            std::begin(dst),
             utils::funcs::gauss_elimination<value_type>
         );
 
@@ -38,18 +35,15 @@ static auto gb_zip_loop_alg_bench(benchmark::State &state) -> void {
 
 static auto gb_zip_openmp_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
-    container_type to(size), from1(size), from2(size);
+    container_type src1(size), src2(size), dst(size);
+    utils::fill_rnd_range(std::begin(src1), std::end(src1), min_val, max_val);
+    utils::fill_rnd_range(std::begin(src2), std::end(src2), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(from1), std::end(from1), min_val, max_val);
-        utils::fill_rnd_range(std::begin(from2), std::end(from2), min_val, max_val);
-        state.ResumeTiming();
-
         auto res_it = zip::openmp_alg(
-            std::cbegin(from1), std::cend(from1),
-            std::cbegin(from2),
-            std::begin(to),
+            std::cbegin(src1), std::cend(src1),
+            std::cbegin(src2),
+            std::begin(dst),
             utils::funcs::gauss_elimination<value_type>
         );
 
@@ -60,18 +54,15 @@ static auto gb_zip_openmp_alg_bench(benchmark::State &state) -> void {
 
 static auto gb_zip_transform_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
-    container_type to(size), from1(size), from2(size);
+    container_type src1(size), src2(size), dst(size);
+    utils::fill_rnd_range(std::begin(src1), std::end(src1), min_val, max_val);
+    utils::fill_rnd_range(std::begin(src2), std::end(src2), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(from1), std::end(from1), min_val, max_val);
-        utils::fill_rnd_range(std::begin(from2), std::end(from2), min_val, max_val);
-        state.ResumeTiming();
-
         auto res_it = std::transform(
-            std::cbegin(from1), std::cend(from1),
-            std::cbegin(from2),
-            std::begin(to),
+            std::cbegin(src1), std::cend(src1),
+            std::cbegin(src2),
+            std::begin(dst),
             utils::funcs::gauss_elimination<value_type>
         );
 
@@ -82,19 +73,16 @@ static auto gb_zip_transform_alg_bench(benchmark::State &state) -> void {
 
 static auto gb_zip_transform_par_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
-    container_type to(size), from1(size), from2(size);
+    container_type src1(size), src2(size), dst(size);
+    utils::fill_rnd_range(std::begin(src1), std::end(src1), min_val, max_val);
+    utils::fill_rnd_range(std::begin(src2), std::end(src2), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(from1), std::end(from1), min_val, max_val);
-        utils::fill_rnd_range(std::begin(from2), std::end(from2), min_val, max_val);
-        state.ResumeTiming();
-
         auto res_it = std::transform(
             std::execution::par,
-            std::cbegin(from1), std::cend(from1),
-            std::cbegin(from2),
-            std::begin(to),
+            std::cbegin(src1), std::cend(src1),
+            std::cbegin(src2),
+            std::begin(dst),
             utils::funcs::gauss_elimination<value_type>
         );
 
@@ -105,19 +93,16 @@ static auto gb_zip_transform_par_alg_bench(benchmark::State &state) -> void {
 
 static auto gb_zip_transform_unseq_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
-    container_type to(size), from1(size), from2(size);
+    container_type src1(size), src2(size), dst(size);
+    utils::fill_rnd_range(std::begin(src1), std::end(src1), min_val, max_val);
+    utils::fill_rnd_range(std::begin(src2), std::end(src2), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(from1), std::end(from1), min_val, max_val);
-        utils::fill_rnd_range(std::begin(from2), std::end(from2), min_val, max_val);
-        state.ResumeTiming();
-
         auto res_it = std::transform(
             std::execution::unseq,
-            std::cbegin(from1), std::cend(from1),
-            std::cbegin(from2),
-            std::begin(to),
+            std::cbegin(src1), std::cend(src1),
+            std::cbegin(src2),
+            std::begin(dst),
             utils::funcs::gauss_elimination<value_type>
         );
 
@@ -128,19 +113,16 @@ static auto gb_zip_transform_unseq_alg_bench(benchmark::State &state) -> void {
 
 static auto gb_zip_transform_par_unseq_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
-    container_type to(size), from1(size), from2(size);
+    container_type src1(size), src2(size), dst(size);
+    utils::fill_rnd_range(std::begin(src1), std::end(src1), min_val, max_val);
+    utils::fill_rnd_range(std::begin(src2), std::end(src2), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(from1), std::end(from1), min_val, max_val);
-        utils::fill_rnd_range(std::begin(from2), std::end(from2), min_val, max_val);
-        state.ResumeTiming();
-
         auto res_it = std::transform(
             std::execution::par_unseq,
-            std::cbegin(from1), std::cend(from1),
-            std::cbegin(from2),
-            std::begin(to),
+            std::cbegin(src1), std::cend(src1),
+            std::cbegin(src2),
+            std::begin(dst),
             utils::funcs::gauss_elimination<value_type>
         );
 

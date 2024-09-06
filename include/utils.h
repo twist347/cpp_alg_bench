@@ -134,4 +134,18 @@ namespace utils {
         }
     }
 
+    template<typename Container>
+    auto get_data(
+        std::size_t size,
+        typename Container::value_type min_val,
+        typename Container::value_type max_val
+    ) -> Container {
+        static auto container = [&] {
+            Container cnt(size);
+            fill_rnd_range(cnt.begin(), cnt.end(), min_val, max_val);
+            return cnt;
+        }();
+        return container;
+    }
+
 }

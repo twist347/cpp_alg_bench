@@ -18,12 +18,9 @@ constexpr auto time_unit = benchmark::kMicrosecond;
 static auto gb_acc_loop_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
+    utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
-        state.ResumeTiming();
-
         auto res = reduce::acc_loop_alg(std::cbegin(data), std::cend(data), static_cast<value_type>(0));
 
         benchmark::DoNotOptimize(res);
@@ -34,12 +31,9 @@ static auto gb_acc_loop_alg_bench(benchmark::State &state) -> void {
 static auto gb_acc_accum_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
+    utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
-        state.ResumeTiming();
-
         auto res = std::accumulate(std::cbegin(data), std::cend(data), static_cast<value_type>(0));
 
         benchmark::DoNotOptimize(res);
@@ -50,12 +44,9 @@ static auto gb_acc_accum_alg_bench(benchmark::State &state) -> void {
 static auto gb_acc_naive_reduce_thread_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
+    utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
-        state.ResumeTiming();
-
         auto res = reduce::naive_reduce_thread(std::cbegin(data), std::cend(data));
 
         benchmark::DoNotOptimize(res);
@@ -66,12 +57,9 @@ static auto gb_acc_naive_reduce_thread_alg_bench(benchmark::State &state) -> voi
 static auto gb_acc_naive_reduce_async_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
+    utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
-        state.ResumeTiming();
-
         auto res = reduce::naive_reduce_async(std::cbegin(data), std::cend(data));
 
         benchmark::DoNotOptimize(res);
@@ -82,12 +70,9 @@ static auto gb_acc_naive_reduce_async_alg_bench(benchmark::State &state) -> void
 static auto gb_acc_openmp_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
+    utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
-        state.ResumeTiming();
-
         auto res = reduce::acc_openmp_alg(std::cbegin(data), std::cend(data));
 
         benchmark::DoNotOptimize(res);
@@ -98,12 +83,9 @@ static auto gb_acc_openmp_alg_bench(benchmark::State &state) -> void {
 static auto gb_acc_reduce_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
+    utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
-        state.ResumeTiming();
-
         auto res = std::reduce(std::cbegin(data), std::cend(data));
 
         benchmark::DoNotOptimize(res);
@@ -114,12 +96,9 @@ static auto gb_acc_reduce_alg_bench(benchmark::State &state) -> void {
 static auto gb_acc_reduce_par_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
+    utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
-        state.ResumeTiming();
-
         auto res = std::reduce(std::execution::par, std::cbegin(data), std::cend(data));
 
         benchmark::DoNotOptimize(res);
@@ -130,12 +109,9 @@ static auto gb_acc_reduce_par_alg_bench(benchmark::State &state) -> void {
 static auto gb_acc_reduce_unseq_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
+    utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
-        state.ResumeTiming();
-
         auto res = std::reduce(std::execution::unseq, std::cbegin(data), std::cend(data));
 
         benchmark::DoNotOptimize(res);
@@ -146,12 +122,9 @@ static auto gb_acc_reduce_unseq_alg_bench(benchmark::State &state) -> void {
 static auto gb_acc_reduce_par_unseq_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
+    utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        state.PauseTiming();
-        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
-        state.ResumeTiming();
-
         auto res = std::reduce(std::execution::par_unseq, std::cbegin(data), std::cend(data));
 
         benchmark::DoNotOptimize(res);
