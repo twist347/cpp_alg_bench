@@ -10,7 +10,7 @@ namespace reduce {
     template<std::input_iterator InputIt, typename Value, typename BinaryOp>
     constexpr auto acc_loop_alg(InputIt first, InputIt last, Value init, BinaryOp op) -> Value {
         for (; first != last; ++first) {
-            init = op(std::move(init), *first);
+            init = std::invoke(op, std::move(init), *first);
         }
         return init;
     }

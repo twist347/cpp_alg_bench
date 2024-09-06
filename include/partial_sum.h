@@ -20,7 +20,7 @@ namespace par_sum {
         *d_first = acc;
 
         while (++first != last) {
-            acc = op(std::move(acc), *first);
+            acc = std::invoke(op, std::move(acc), *first);
             *++d_first = acc;
         }
 
