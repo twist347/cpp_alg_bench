@@ -35,15 +35,17 @@ TEST(CopyNaiveLoopAlg, StringTest) {
 TEST(CopyLoopAlg, NumericTest) {
     constexpr std::size_t size = 100'000;
     const double max_v = 100'000, min_v = -max_v;
-    std::vector<double> from(size), to1(size), to2(size);
+    std::vector<double> from(size), to1(size), to2(size), to3(size);
     utils::fill_rnd_range(std::begin(from), std::end(from), min_v, max_v);
 
     const auto res_it1 = copy::loop_alg(std::cbegin(from), std::cend(from), std::begin(to1));
     const auto res_it2 = std::copy(std::cbegin(from), std::cend(from), std::begin(to2));
+    std::memcpy(std::data(to3), std::data(from), size * sizeof(double));
 
     ASSERT_EQ(res_it1, std::end(to1));
     ASSERT_EQ(res_it2, std::end(to2));
     ASSERT_TRUE(std::equal(std::cbegin(to1), std::cend(to1), std::cbegin(to2)));
+    ASSERT_TRUE(std::equal(std::cbegin(to2), std::cend(to2), std::cbegin(to3)));
 }
 
 TEST(CopyLoopAlg, StringTest) {
