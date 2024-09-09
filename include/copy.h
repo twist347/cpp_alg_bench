@@ -45,7 +45,7 @@ namespace copy {
     auto openmp_alg(RandomIt first, RandomIt last, DRandomIt d_first) -> DRandomIt {
         const auto n = std::distance(first, last);
 #pragma omp parallel for schedule(guided)
-        for (std::size_t i = 0; i < n; ++i) {
+        for (std::ptrdiff_t i = 0; i < n; ++i) {
             *(d_first + i) = *(first + i);
         }
         return d_first + n;

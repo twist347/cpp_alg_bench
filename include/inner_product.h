@@ -28,4 +28,19 @@ namespace inner_prod {
         return inner_product(first1, last1, first2, init, std::plus(), std::multiplies());
     }
 
+    template<std::random_access_iterator RandIt1, std::input_iterator RandIt2, typename Value>
+    auto openmp_alg(
+        RandIt1 first1, RandIt1 last1,
+        RandIt2 first2,
+        Value init
+    ) -> Value {
+        const auto size = std::distance(first1, last1);
+
+#pragma omp parallel for reduction(+:init) schedule(guided)
+        for (std::ptrdiff_t i = 0; i < size; ++i) {
+            init += (*(first1 + i)) * (*(first2 + i));
+        }
+        return init;
+    }
+
 }

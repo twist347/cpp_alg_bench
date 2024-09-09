@@ -34,7 +34,7 @@ namespace zip {
     ) -> DRandIt {
         const auto size = std::distance(first1, last1);
 #pragma omp parallel for schedule(guided)
-        for (std::size_t i = 0; i < size; ++i) {
+        for (std::ptrdiff_t i = 0; i < size; ++i) {
             *(d_first + i) = std::invoke(op, *(first1 + i), *(first2 + i));
         }
         return d_first + size;
