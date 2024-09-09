@@ -4,18 +4,16 @@
 
 добавить графики
 
-может быть и native
++ zip(transform)
 
-zip(transform)
++ transform_reduce
 
-transform_reduce(map + acc)
-
-partial_sum and inclusive_scan
++ partial_sum and inclusive_scan
 
 вектора в тестах влезающие в кэш
 
 вставить слайды неудачи алгоритмов из Владимирова
 
-добавить концепты итераторов на функции
++ добавить концепты итераторов на функции
 
-добавить тест copy со случайными строками
++ добавить тест copy со случайными строками
