@@ -4,10 +4,11 @@
 
 /*
  *  NOTE:
+ *  comparison of sorting function speed depending on comparator type (func, method, lambda)
  *  GCC vs Clang
  */
 
-using value_type = double;
+using value_type = int;
 using container_type = std::vector<value_type>;
 
 constexpr value_type max_val = 10'000;
@@ -78,11 +79,10 @@ static auto gb_std_sort_closure_cmp_bench(benchmark::State &state) -> void {
     }
 }
 
+constexpr double min_wu_t = 1.0;
 
-constexpr std::size_t iter_num = 50;
-
-BENCHMARK(gb_std_sort_func_cmp_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
-BENCHMARK(gb_std_sort_struct_cmp_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
-BENCHMARK(gb_std_sort_closure_cmp_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
+BENCHMARK(gb_std_sort_func_cmp_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_sort_struct_cmp_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_sort_closure_cmp_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
 
 BENCHMARK_MAIN();

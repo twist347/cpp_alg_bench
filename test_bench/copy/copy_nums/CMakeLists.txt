@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(T copy_bench)
+set(T copy_nums_bench)
 
 project(${T})
 

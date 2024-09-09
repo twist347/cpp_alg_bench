@@ -22,7 +22,8 @@ add_subdirectory(${test_bench_path}/sort)
 add_subdirectory(${test_bench_path}/sort_quiz)
 add_subdirectory(${test_bench_path}/map)
 add_subdirectory(${test_bench_path}/zip)
-add_subdirectory(${test_bench_path}/copy)
+add_subdirectory(${test_bench_path}/copy/copy_nums)
+add_subdirectory(${test_bench_path}/copy/copy_strings)
 add_subdirectory(${test_bench_path}/partial_sum)
 
 # accuracy tests

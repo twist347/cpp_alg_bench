@@ -7,12 +7,12 @@
 using value_type = int;
 using container_type = std::vector<value_type>;
 
-constexpr value_type max_val = 1.0;
+constexpr value_type max_val = 10'000;
 constexpr value_type min_val = -max_val;
 
 constexpr std::size_t start = 25'000'000, finish = 100'000'000, step = 25'000'000;
 
-constexpr auto time_unit = benchmark::kNanosecond;
+constexpr auto time_unit = benchmark::kMicrosecond;
 
 static auto gb_naive_loop_copy_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
@@ -20,7 +20,7 @@ static auto gb_naive_loop_copy_alg_bench(benchmark::State &state) -> void {
     utils::fill_rnd_range(std::begin(src), std::end(src), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        auto res_it = copy::naive_loop_alg(std::cbegin(src), std::cbegin(src), std::begin(dst));
+        auto res_it = copy::naive_loop_alg(std::cbegin(src), std::cend(src), std::begin(dst));
 
         benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();
@@ -33,7 +33,7 @@ static auto gb_loop_copy_alg_bench(benchmark::State &state) -> void {
     utils::fill_rnd_range(std::begin(src), std::end(src), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        auto res_it = copy::loop_alg(std::cbegin(src), std::cbegin(src), std::begin(dst));
+        auto res_it = copy::loop_alg(std::cbegin(src), std::cend(src), std::begin(dst));
 
         benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();
@@ -46,7 +46,7 @@ static auto gb_openmp_copy_alg_bench(benchmark::State &state) -> void {
     utils::fill_rnd_range(std::begin(src), std::end(src), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        auto res_it = copy::openmp_alg(std::cbegin(src), std::cbegin(src), std::begin(dst));
+        auto res_it = copy::openmp_alg(std::cbegin(src), std::cend(src), std::begin(dst));
 
         benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();
@@ -59,7 +59,7 @@ static auto gb_std_copy_alg_bench(benchmark::State &state) -> void {
     utils::fill_rnd_range(std::begin(src), std::end(src), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        auto res_it = std::copy(std::cbegin(src), std::cbegin(src), std::begin(dst));
+        auto res_it = std::copy(std::cbegin(src), std::cend(src), std::begin(dst));
 
         benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();
@@ -72,7 +72,7 @@ static auto gb_std_copy_par_alg_bench(benchmark::State &state) -> void {
     utils::fill_rnd_range(std::begin(src), std::end(src), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        auto res_it = std::copy(std::execution::par, std::cbegin(src), std::cbegin(src), std::begin(dst));
+        auto res_it = std::copy(std::execution::par, std::cbegin(src), std::cend(src), std::begin(dst));
 
         benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();
@@ -85,7 +85,7 @@ static auto gb_std_copy_unseq_alg_bench(benchmark::State &state) -> void {
     utils::fill_rnd_range(std::begin(src), std::end(src), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        auto res = std::copy(std::execution::unseq, std::cbegin(src), std::cbegin(src), std::begin(dst));
+        auto res = std::copy(std::execution::unseq, std::cbegin(src), std::cend(src), std::begin(dst));
 
         benchmark::DoNotOptimize(res);
         benchmark::ClobberMemory();
@@ -98,7 +98,7 @@ static auto gb_std_copy_par_unseq_alg_bench(benchmark::State &state) -> void {
     utils::fill_rnd_range(std::begin(src), std::end(src), min_val, max_val);
 
     for ([[maybe_unused]] auto _ : state) {
-        auto res_it = std::copy(std::execution::par_unseq, std::cbegin(src), std::cbegin(src), std::begin(dst));
+        auto res_it = std::copy(std::execution::par_unseq, std::cbegin(src), std::cend(src), std::begin(dst));
 
         benchmark::DoNotOptimize(res_it);
         benchmark::ClobberMemory();
@@ -118,13 +118,15 @@ static auto gb_memcpy_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-BENCHMARK(gb_naive_loop_copy_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
-BENCHMARK(gb_loop_copy_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
-BENCHMARK(gb_openmp_copy_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
-BENCHMARK(gb_std_copy_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
-BENCHMARK(gb_std_copy_par_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
-BENCHMARK(gb_std_copy_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
-BENCHMARK(gb_std_copy_par_unseq_alg_bench)->DenseRange(start, finish, step);
-BENCHMARK(gb_memcpy_alg_bench)->DenseRange(start, finish, step);
+constexpr double min_wu_t = 1.0;
+
+BENCHMARK(gb_naive_loop_copy_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_loop_copy_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_openmp_copy_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_copy_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_copy_par_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_copy_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_copy_par_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_memcpy_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
 
 BENCHMARK_MAIN();

@@ -3,7 +3,7 @@
 
 #include "utils.h"
 
-using value_type = double;
+using value_type = int;
 using container_type = std::vector<value_type>;
 
 constexpr value_type max_val = 10'000;
@@ -93,12 +93,12 @@ static auto gb_sort_par_unseq_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-constexpr std::size_t iter_num = 50;
+constexpr double min_wu_t = 1.0;
 
-BENCHMARK(gb_qsort_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
-BENCHMARK(gb_sort_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
-BENCHMARK(gb_sort_par_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
-BENCHMARK(gb_sort_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
-BENCHMARK(gb_sort_par_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->Iterations(iter_num);
+BENCHMARK(gb_qsort_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_sort_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
+BENCHMARK(gb_sort_par_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
+BENCHMARK(gb_sort_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
+BENCHMARK(gb_sort_par_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
 
 BENCHMARK_MAIN();
