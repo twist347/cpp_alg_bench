@@ -11,7 +11,7 @@ using container_type = std::vector<value_type>;
 constexpr value_type max_val = 1.0;
 constexpr value_type min_val = 0.0;
 
-constexpr std::size_t start = 2'500'000, finish = 10'000'000, step = 2'500'000;
+constexpr std::size_t start = 1'000'000, finish = 10'000'000, step = 1'000'000;
 
 constexpr auto time_unit = benchmark::kMicrosecond;
 

@@ -16,7 +16,7 @@ constexpr value_type min_val = -max_val;
 
 constexpr std::size_t start = 1'000'000, finish = 5'000'000, step = 1'000'000;
 
-constexpr auto time_unit = benchmark::kMillisecond;
+constexpr auto time_unit = benchmark::kMicrosecond;
 
 template<typename Value>
 auto cmp_func(Value lhs, Value rhs) -> bool {

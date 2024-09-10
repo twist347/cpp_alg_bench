@@ -135,7 +135,7 @@ namespace utils {
     }
 
     template<typename Container>
-    auto get_data(
+    [[maybe_unused]] auto get_data(
         std::size_t size,
         typename Container::value_type min_val,
         typename Container::value_type max_val

@@ -2,6 +2,9 @@
 
 requirements: C++-20, google test, google benchmark, tbb, openmp
 
+
+plotly for plotting (python)
+
 perf tests in test_bench dir
 
 accuracy tests of custom algs in test_accuracy dir (with address, undefined and leak sanitizers)
@@ -14,3 +17,9 @@ accuracy tests of custom algs in test_accuracy dir (with address, undefined and 
     reduce
     inner product
     partial sum
+
+## plotting:
+./generate_csv.sh ./executable -> benchmark.csv
+
+
+python plot.py -f ./benchmark.csv

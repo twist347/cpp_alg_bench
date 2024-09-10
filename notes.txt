@@ -2,7 +2,7 @@
 
 как back to basics cpp con
 
-добавить графики
++ добавить графики
 
 + zip(transform)
 

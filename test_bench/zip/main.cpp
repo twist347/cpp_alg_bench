@@ -10,9 +10,9 @@ using container_type = std::vector<value_type>;
 constexpr value_type max_val = 10'000;
 constexpr value_type min_val = -max_val;
 
-constexpr std::size_t start = 25'000, finish = 100'000, step = 25'000;
+constexpr std::size_t start = 10'000, finish = 100'000, step = 10'000;
 
-constexpr auto time_unit = benchmark::kMillisecond;
+constexpr auto time_unit = benchmark::kMicrosecond;
 
 static auto gb_zip_loop_alg_bench(benchmark::State &state) -> void {
     const auto size = state.range(0);
@@ -131,7 +131,7 @@ static auto gb_zip_transform_par_unseq_alg_bench(benchmark::State &state) -> voi
     }
 }
 
-constexpr double min_wu_t = 2.0;
+constexpr double min_wu_t = 1.0;
 
 BENCHMARK(gb_zip_loop_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
 BENCHMARK(gb_zip_openmp_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
