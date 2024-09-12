@@ -15,7 +15,7 @@ constexpr std::size_t start = 1'000'000, finish = 10'000'000, step = 1'000'000;
 
 constexpr auto time_unit = benchmark::kMicrosecond;
 
-static auto gb_inner_prod_loop_alg_bench(benchmark::State &state) -> void {
+static auto gb_inner_prod_loop_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data1(size), data2(size);
     utils::fill_rnd_range(std::begin(data1), std::end(data1), min_val, max_val);
@@ -33,7 +33,7 @@ static auto gb_inner_prod_loop_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_inner_prod_openmp_alg_bench(benchmark::State &state) -> void {
+static auto gb_inner_prod_openmp_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data1(size), data2(size);
     utils::fill_rnd_range(std::begin(data1), std::end(data1), min_val, max_val);
@@ -51,7 +51,7 @@ static auto gb_inner_prod_openmp_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_std_inner_prod_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_inner_prod_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data1(size), data2(size);
     utils::fill_rnd_range(std::begin(data1), std::end(data1), min_val, max_val);
@@ -69,7 +69,7 @@ static auto gb_std_inner_prod_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_std_tr_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_tr_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data1(size), data2(size);
     utils::fill_rnd_range(std::begin(data1), std::end(data1), min_val, max_val);
@@ -87,7 +87,7 @@ static auto gb_std_tr_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_std_tr_par_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_tr_par_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data1(size), data2(size);
     utils::fill_rnd_range(std::begin(data1), std::end(data1), min_val, max_val);
@@ -106,7 +106,7 @@ static auto gb_std_tr_par_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_std_tr_unseq_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_tr_unseq_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data1(size), data2(size);
     utils::fill_rnd_range(std::begin(data1), std::end(data1), min_val, max_val);
@@ -125,7 +125,7 @@ static auto gb_std_tr_unseq_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_std_tr_par_unseq_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_tr_par_unseq_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data1(size), data2(size);
     utils::fill_rnd_range(std::begin(data1), std::end(data1), min_val, max_val);
@@ -146,12 +146,15 @@ static auto gb_std_tr_par_unseq_alg_bench(benchmark::State &state) -> void {
 
 constexpr double min_wu_t = 1.0;
 
-BENCHMARK(gb_inner_prod_loop_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_inner_prod_openmp_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_std_inner_prod_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_std_tr_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_std_tr_par_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_std_tr_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_std_tr_par_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_inner_prod_loop_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+
+BENCHMARK(gb_inner_prod_openmp_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+
+BENCHMARK(gb_std_inner_prod_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+
+BENCHMARK(gb_std_tr_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_tr_par_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_tr_unseq_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_tr_par_unseq_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
 
 BENCHMARK_MAIN();

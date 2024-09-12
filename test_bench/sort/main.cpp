@@ -18,7 +18,7 @@ constexpr auto qsort_cmp_asc(const void *lhs, const void *rhs) -> Value {
     return *static_cast<const Value *>(lhs) - *static_cast<const Value *>(rhs);
 }
 
-static auto gb_qsort_alg_bench(benchmark::State &state) -> void {
+static auto gb_qsort_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
 
@@ -33,7 +33,7 @@ static auto gb_qsort_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_sort_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_sort_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
 
@@ -48,7 +48,7 @@ static auto gb_sort_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_sort_par_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_sort_par_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
 
@@ -63,7 +63,7 @@ static auto gb_sort_par_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_sort_unseq_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_sort_unseq_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
 
@@ -78,7 +78,7 @@ static auto gb_sort_unseq_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_sort_par_unseq_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_sort_par_unseq_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
 
@@ -93,12 +93,111 @@ static auto gb_sort_par_unseq_alg_bench(benchmark::State &state) -> void {
     }
 }
 
+static auto gb_std_stable_sort_alg(benchmark::State &state) -> void {
+    const auto size = state.range(0);
+    container_type data(size);
+
+    for ([[maybe_unused]] auto _ : state) {
+        state.PauseTiming();
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
+        state.ResumeTiming();
+
+        std::stable_sort(std::begin(data), std::end(data));
+
+        benchmark::ClobberMemory();
+    }
+}
+
+static auto gb_std_stable_sort_par_alg(benchmark::State &state) -> void {
+    const auto size = state.range(0);
+    container_type data(size);
+
+    for ([[maybe_unused]] auto _ : state) {
+        state.PauseTiming();
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
+        state.ResumeTiming();
+
+        std::stable_sort(std::execution::par, std::begin(data), std::end(data));
+
+        benchmark::ClobberMemory();
+    }
+}
+
+static auto gb_std_stable_sort_unseq_alg(benchmark::State &state) -> void {
+    const auto size = state.range(0);
+    container_type data(size);
+
+    for ([[maybe_unused]] auto _ : state) {
+        state.PauseTiming();
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
+        state.ResumeTiming();
+
+        std::stable_sort(std::execution::unseq, std::begin(data), std::end(data));
+
+        benchmark::ClobberMemory();
+    }
+}
+
+static auto gb_std_stable_sort_par_unseq_alg(benchmark::State &state) -> void {
+    const auto size = state.range(0);
+    container_type data(size);
+
+    for ([[maybe_unused]] auto _ : state) {
+        state.PauseTiming();
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
+        state.ResumeTiming();
+
+        std::stable_sort(std::execution::par_unseq, std::begin(data), std::end(data));
+
+        benchmark::ClobberMemory();
+    }
+}
+
+static auto gb_std_ranges_sort_alg(benchmark::State &state) -> void {
+    const auto size = state.range(0);
+    container_type data(size);
+
+    for ([[maybe_unused]] auto _ : state) {
+        state.PauseTiming();
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
+        state.ResumeTiming();
+
+        std::ranges::sort(data);
+
+        benchmark::ClobberMemory();
+    }
+}
+
+static auto gb_std_ranges_stable_sort_alg(benchmark::State &state) -> void {
+    const auto size = state.range(0);
+    container_type data(size);
+
+    for ([[maybe_unused]] auto _ : state) {
+        state.PauseTiming();
+        utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
+        state.ResumeTiming();
+
+        std::ranges::stable_sort(data);
+
+        benchmark::ClobberMemory();
+    }
+}
+
 constexpr double min_wu_t = 1.0;
 
-BENCHMARK(gb_qsort_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_sort_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
-BENCHMARK(gb_sort_par_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
-BENCHMARK(gb_sort_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
-BENCHMARK(gb_sort_par_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit);
+BENCHMARK(gb_qsort_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+
+BENCHMARK(gb_std_sort_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_sort_par_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_sort_unseq_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_sort_par_unseq_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+
+BENCHMARK(gb_std_stable_sort_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_stable_sort_par_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_stable_sort_unseq_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_stable_sort_par_unseq_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+
+BENCHMARK(gb_std_ranges_sort_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_ranges_stable_sort_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
 
 BENCHMARK_MAIN();

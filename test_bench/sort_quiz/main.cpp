@@ -34,7 +34,7 @@ struct Comparator {
 
 constexpr auto cmp_closure = []<typename Value>(Value lhs, Value rhs) { return lhs < rhs; };
 
-static auto gb_std_sort_func_cmp_bench(benchmark::State &state) -> void {
+static auto gb_std_sort_func_cmp(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
 
@@ -49,7 +49,7 @@ static auto gb_std_sort_func_cmp_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_std_sort_struct_cmp_bench(benchmark::State &state) -> void {
+static auto gb_std_sort_struct_cmp(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
 
@@ -64,7 +64,7 @@ static auto gb_std_sort_struct_cmp_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_std_sort_closure_cmp_bench(benchmark::State &state) -> void {
+static auto gb_std_sort_closure_cmp(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
 
@@ -81,8 +81,8 @@ static auto gb_std_sort_closure_cmp_bench(benchmark::State &state) -> void {
 
 constexpr double min_wu_t = 1.0;
 
-BENCHMARK(gb_std_sort_func_cmp_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_std_sort_struct_cmp_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_std_sort_closure_cmp_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_sort_func_cmp)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_sort_struct_cmp)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_sort_closure_cmp)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
 
 BENCHMARK_MAIN();

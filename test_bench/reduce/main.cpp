@@ -15,7 +15,7 @@ constexpr std::size_t start = 1'000'000, finish = 10'000'000, step = 1'000'000;
 
 constexpr auto time_unit = benchmark::kMicrosecond;
 
-static auto gb_acc_loop_alg_bench(benchmark::State &state) -> void {
+static auto gb_acc_loop_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
     utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
@@ -28,7 +28,7 @@ static auto gb_acc_loop_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_acc_openmp_alg_bench(benchmark::State &state) -> void {
+static auto gb_acc_openmp_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
     utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
@@ -41,7 +41,7 @@ static auto gb_acc_openmp_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_acc_accum_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_acc_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
     utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
@@ -54,7 +54,7 @@ static auto gb_acc_accum_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_acc_naive_reduce_thread_alg_bench(benchmark::State &state) -> void {
+static auto gb_naive_reduce_thread_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
     utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
@@ -67,7 +67,7 @@ static auto gb_acc_naive_reduce_thread_alg_bench(benchmark::State &state) -> voi
     }
 }
 
-static auto gb_acc_naive_reduce_async_alg_bench(benchmark::State &state) -> void {
+static auto gb_naive_reduce_async_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
     utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
@@ -80,7 +80,7 @@ static auto gb_acc_naive_reduce_async_alg_bench(benchmark::State &state) -> void
     }
 }
 
-static auto gb_acc_reduce_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_reduce_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
     utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
@@ -93,7 +93,7 @@ static auto gb_acc_reduce_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_acc_reduce_par_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_reduce_par_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
     utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
@@ -106,7 +106,7 @@ static auto gb_acc_reduce_par_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_acc_reduce_unseq_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_reduce_unseq_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
     utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
@@ -119,7 +119,7 @@ static auto gb_acc_reduce_unseq_alg_bench(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_acc_reduce_par_unseq_alg_bench(benchmark::State &state) -> void {
+static auto gb_std_reduce_par_unseq_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
     utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
@@ -134,14 +134,18 @@ static auto gb_acc_reduce_par_unseq_alg_bench(benchmark::State &state) -> void {
 
 constexpr double min_wu_t = 1.0;
 
-BENCHMARK(gb_acc_loop_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_acc_openmp_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_acc_accum_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_acc_naive_reduce_thread_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_acc_naive_reduce_async_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_acc_reduce_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_acc_reduce_par_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_acc_reduce_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-BENCHMARK(gb_acc_reduce_par_unseq_alg_bench)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_acc_loop_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+
+BENCHMARK(gb_acc_openmp_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+
+BENCHMARK(gb_std_acc_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+
+BENCHMARK(gb_naive_reduce_thread_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_naive_reduce_async_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+
+BENCHMARK(gb_std_reduce_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_reduce_par_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_reduce_unseq_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+BENCHMARK(gb_std_reduce_par_unseq_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
 
 BENCHMARK_MAIN();
