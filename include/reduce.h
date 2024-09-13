@@ -101,8 +101,7 @@ namespace reduce {
 
         auto block_start = first;
         for (std::size_t i = 0; i < num_threads - 1; ++i) {
-            auto block_end = block_start;
-            block_end += block_size;
+            const auto block_end = block_start + block_size;
 
             results.emplace_back(std::async(std::launch::async, [block_start, block_end, init] {
                 return std::accumulate(block_start, block_end, init);
