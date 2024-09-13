@@ -18,7 +18,7 @@ accuracy tests of custom algs in test_accuracy dir (with address, undefined and 
     inner product
     partial sum
 
-## plotting:
+## plotting via plotly:
 ./generate_csv.sh ./executable -> benchmark.csv
 
 
