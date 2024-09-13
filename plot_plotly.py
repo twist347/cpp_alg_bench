@@ -23,10 +23,13 @@ def get_default_ylabel(args):
         label = args.metric
     else:
         label = args.transform + '(' + args.metric + ')'
+
+    if args.metric == 'real_time':
+        label += ' (ms)'
+
     if args.relative_to is not None:
         label += ' relative to %s' % args.relative_to
     return label
-
 
 def parse_args():
     """Parse commandline arguments"""

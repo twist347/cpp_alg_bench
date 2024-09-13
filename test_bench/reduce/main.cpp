@@ -41,19 +41,6 @@ static auto gb_acc_openmp_alg(benchmark::State &state) -> void {
     }
 }
 
-static auto gb_std_acc_alg(benchmark::State &state) -> void {
-    const auto size = state.range(0);
-    container_type data(size);
-    utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
-
-    for ([[maybe_unused]] auto _ : state) {
-        auto res = std::accumulate(std::cbegin(data), std::cend(data), static_cast<value_type>(0));
-
-        benchmark::DoNotOptimize(res);
-        benchmark::ClobberMemory();
-    }
-}
-
 static auto gb_naive_reduce_thread_alg(benchmark::State &state) -> void {
     const auto size = state.range(0);
     container_type data(size);
@@ -74,6 +61,19 @@ static auto gb_naive_reduce_async_alg(benchmark::State &state) -> void {
 
     for ([[maybe_unused]] auto _ : state) {
         auto res = reduce::naive_reduce_async(std::cbegin(data), std::cend(data));
+
+        benchmark::DoNotOptimize(res);
+        benchmark::ClobberMemory();
+    }
+}
+
+static auto gb_std_acc_alg(benchmark::State &state) -> void {
+    const auto size = state.range(0);
+    container_type data(size);
+    utils::fill_rnd_range(std::begin(data), std::end(data), min_val, max_val);
+
+    for ([[maybe_unused]] auto _ : state) {
+        auto res = std::accumulate(std::cbegin(data), std::cend(data), static_cast<value_type>(0));
 
         benchmark::DoNotOptimize(res);
         benchmark::ClobberMemory();
@@ -138,10 +138,10 @@ BENCHMARK(gb_acc_loop_alg)->DenseRange(start, finish, step)->Unit(time_unit)->Mi
 
 BENCHMARK(gb_acc_openmp_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
 
-BENCHMARK(gb_std_acc_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
-
 BENCHMARK(gb_naive_reduce_thread_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
 BENCHMARK(gb_naive_reduce_async_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
+
+BENCHMARK(gb_std_acc_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
 
 BENCHMARK(gb_std_reduce_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);
 BENCHMARK(gb_std_reduce_par_alg)->DenseRange(start, finish, step)->Unit(time_unit)->MinWarmUpTime(min_wu_t);

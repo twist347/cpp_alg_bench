@@ -36,9 +36,9 @@ namespace inner_prod {
     ) -> Value {
         const auto size = std::distance(first1, last1);
 
-#pragma omp parallel for reduction(+:init) schedule(guided)
+#pragma omp parallel for simd reduction(+:init) schedule(guided)
         for (std::ptrdiff_t i = 0; i < size; ++i) {
-            init += (*(first1 + i)) * (*(first2 + i));
+            init += first1[i] * first2[i];
         }
         return init;
     }

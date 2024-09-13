@@ -23,9 +23,9 @@ namespace reduce {
     template<std::random_access_iterator RandIt, typename Value>
     auto acc_openmp_alg(RandIt first, RandIt last, Value init) -> Value {
         const auto size = std::distance(first, last);
-#pragma omp parallel for reduction(+:init) schedule(guided)
+#pragma omp parallel for simd reduction(+:init) schedule(guided)
         for (std::ptrdiff_t i = 0; i < size; ++i) {
-            init += *(first + i);
+            init += first[i];
         }
         return init;
     }

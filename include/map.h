@@ -25,9 +25,9 @@ namespace map {
     >
     auto openmp_alg(RandomIt first, RandomIt last, DRandomIt d_first, UnaryOp op) -> DRandomIt {
         const auto n = std::distance(first, last);
-#pragma omp parallel for schedule(guided)
+#pragma omp parallel for simd schedule(guided)
         for (std::ptrdiff_t i = 0; i < n; ++i) {
-            *(d_first + i) = std::invoke(op, *(first + i));
+            d_first[i] = std::invoke(op, first[i]);
         }
         return d_first + n;
     }

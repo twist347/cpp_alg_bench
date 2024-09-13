@@ -22,4 +22,4 @@ accuracy tests of custom algs in test_accuracy dir (with address, undefined and 
 ./generate_csv.sh ./executable -> benchmark.csv
 
 
-python plot.py -f ./benchmark.csv
+python plot_plotly.py -f ./benchmark.csv

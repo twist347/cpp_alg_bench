@@ -9,7 +9,7 @@ using container_type = std::vector<value_type>;
 
 constexpr std::size_t str_size = 100;
 
-constexpr std::size_t start = 500'000, finish = 1'000'000, step = 250'000;
+constexpr std::size_t start = 100'000, finish = 1'000'000, step = 100'000;
 
 constexpr auto time_unit = benchmark::kMicrosecond;
 

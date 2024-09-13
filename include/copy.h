@@ -46,7 +46,7 @@ namespace copy {
         const auto n = std::distance(first, last);
 #pragma omp parallel for simd schedule(guided)
         for (std::ptrdiff_t i = 0; i < n; ++i) {
-            *(d_first + i) = *(first + i);
+            d_first[i] = first[i];
         }
         return d_first + n;
     }
