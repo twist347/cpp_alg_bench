@@ -24,7 +24,7 @@ namespace reduce {
     auto acc_openmp_alg(RandIt first, RandIt last, Value init) -> Value {
         const auto size = std::distance(first, last);
 #pragma omp parallel for simd reduction(+:init) schedule(guided)
-        for (std::ptrdiff_t i = 0; i < size; ++i) {
+        for (std::size_t i = 0; i < size; ++i) {
             init += first[i];
         }
         return init;

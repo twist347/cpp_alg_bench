@@ -42,7 +42,7 @@ namespace utils {
 
         template<Numeric Value>
         [[maybe_unused]] auto num_sin_integration(Value x) -> Value {
-            const std::size_t n = 1'000;
+            constexpr std::size_t n = 1'000;
             const Value h = x / n;
             Value sum = 0.0;
             for (std::size_t i = 1; i < n; ++i) {
@@ -55,8 +55,8 @@ namespace utils {
 
         template<std::floating_point Value>
         auto newton_sqrt(Value x) -> Value {
-            const Value eps = 1e-10;
-            const std::size_t n = 1'000;
+            constexpr Value eps = 1e-10;
+            constexpr std::size_t n = 1'000;
             auto guess = x;
             for (std::size_t i = 0; i < n; ++i) {
                 const auto f = guess * guess - x;
@@ -72,7 +72,7 @@ namespace utils {
 
         template<std::floating_point Value>
         constexpr auto gauss_elimination(Value a, Value b) -> Value {
-            const std::size_t n = 50;
+            constexpr std::size_t n = 50;
             std::vector<std::vector<Value>> matrix(n, std::vector<Value>(n, a));
             std::vector<Value> rhs(n, b);
             for (std::size_t i = 0; i < n; ++i) {
@@ -121,7 +121,7 @@ namespace utils {
 
     template<typename Iter>
     auto fill_rnd_str(Iter first, Iter last) -> void {
-        static const std::array<char, 62> characters = {
+        static constexpr std::array<char, 62> characters = {
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
             'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
